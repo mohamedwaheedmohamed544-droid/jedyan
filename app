@@ -1,4 +1,4 @@
-cd jedyan-web
+cd jedyan
 git init
 git add .
 git commit -m "Jedyan website + dashboard"
