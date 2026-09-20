@@ -1,7 +1,0 @@
-cd jedyan
-git init
-git add .
-git commit -m "Jedyan website + dashboard"
-git branch -M main
-git remote add origin https://github.com/mohamedwaheedmohamed544-droid/jedyan.git
-git push -u origin main
