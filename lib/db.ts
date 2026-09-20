@@ -48,12 +48,24 @@ function getDriver(): Driver {
       },
     };
   } else {
+    // Serverless hosts have a read-only, throw-away filesystem: SQLite cannot work there.
+    const serverless = !!(process.env.NETLIFY || process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+    if (serverless) {
+      throw new Error(
+        "DATABASE_URL is missing (or is not a postgres:// URL). " +
+          "On Netlify/Vercel the site needs a Postgres database — add DATABASE_URL " +
+          "in the site's environment variables and redeploy.",
+      );
+    }
+    /* Loaded through an opaque require so the bundler never tries to resolve this
+       optional native driver — on Postgres hosts it is not installed at all. */
+    // eslint-disable-next-line no-eval
+    const req = eval("require") as NodeRequire;
+    const Database = req("better-sqlite3") as typeof import("better-sqlite3");
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Database = require("better-sqlite3") as typeof import("better-sqlite3");
+    const fs = req("fs") as typeof import("fs");
     // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const fs = require("fs") as typeof import("fs");
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const path = require("path") as typeof import("path");
+    const path = req("path") as typeof import("path");
     const file = process.env.DATABASE_FILE || path.join(process.cwd(), "data", "jedyan.db");
     fs.mkdirSync(path.dirname(file), { recursive: true });
     const db = new Database(file);
