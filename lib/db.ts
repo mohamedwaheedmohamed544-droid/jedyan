@@ -34,7 +34,9 @@ function getDriver(): Driver {
   if (isPg) {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const { Pool } = require("pg") as typeof import("pg");
-    const pool = new Pool({ connectionString: url, max: 5, ssl: url.includes("sslmode=require") ? { rejectUnauthorized: false } : undefined });
+    const local = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(url);
+    const noSsl = local || url.includes("sslmode=disable");
+    const pool = new Pool({ connectionString: url, max: 5, ssl: noSsl ? undefined : { rejectUnauthorized: false } });
     driver = {
       kind: "postgres",
       async query<T>(sql: string, params: unknown[] = []) {
@@ -150,8 +152,10 @@ export function initDb() {
   return ready;
 }
 
-/* ---------- JSON helpers (SQLite stores JSON as text) ---------- */
-export const enc = (v: unknown) => (isPg ? (v as object) : JSON.stringify(v));
+/* ---------- JSON helpers ----------
+   Always send JSON as text: Postgres casts a JSON string into json/jsonb, while passing a
+   raw JS array would be encoded as a Postgres array literal and rejected. */
+export const enc = (v: unknown) => JSON.stringify(v);
 export const dec = <T>(v: unknown, fallback: T): T => {
   if (v == null) return fallback;
   if (typeof v === "string") {
