@@ -1,0 +1,22 @@
+.headCol { display: grid; gap: 18px; align-content: start; }
+@media (min-width: 960px) { .headCol { position: sticky; top: calc(var(--header-h) + 40px); } }
+.segments { border-top: 1px solid var(--line-light); }
+.segments li { position: relative; display: grid; gap: 4px; padding: 22px 0; padding-inline-end: 12px; border-bottom: 1px solid var(--line-light); }
+.segments li::after { content: ""; position: absolute; inset-inline-start: 0; bottom: -1px; height: 2px; width: 100%; background: var(--orange); transform: scaleX(0); transform-origin: var(--o, left); transition: transform .7s var(--ease-out); }
+:global([dir="rtl"]) .segments li::after { --o: right; }
+.segments li:hover::after { transform: scaleX(1); }
+@media (min-width: 720px) { .segments li { grid-template-columns: 1fr 1.2fr; column-gap: 32px; align-items: baseline; } .segEn { grid-column: 1 / -1; } }
+.segEn { font-family: var(--font-serif); font-size: .875rem; letter-spacing: .08em; color: var(--steel); direction: ltr; text-align: start; }
+:global([dir="rtl"]) .segEn { text-align: right; }
+.segments strong { font-size: 1.375rem; font-weight: 600; }
+.need { color: var(--graphite); }
+
+.sectors { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); border-top: 1px solid var(--line-light); border-inline-start: 1px solid var(--line-light); }
+.sectors li { display: grid; align-content: start; gap: 8px; padding: 26px 22px 30px; border-bottom: 1px solid var(--line-light); border-inline-end: 1px solid var(--line-light); transition: background-color .4s var(--ease-out); min-height: 180px; }
+.sectors li:hover { background: var(--tint); }
+.secEn { font-family: var(--font-serif); letter-spacing: .06em; font-size: .9375rem; color: var(--orange); direction: ltr; unicode-bidi: isolate; }
+.sectors strong { font-size: 1.25rem; font-weight: 600; }
+.profile { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.profile span { font-size: .8125rem; padding: 3px 10px; border-radius: 999px; background: var(--paper); color: var(--graphite); }
+.sectors li:hover .profile span { background: #fff; }
+.more { margin-top: 32px; }

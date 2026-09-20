@@ -1,0 +1,10 @@
+# Netlify configuration — Next.js runtime v5 handles the build output automatically.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

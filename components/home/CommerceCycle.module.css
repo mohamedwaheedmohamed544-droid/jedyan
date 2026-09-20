@@ -1,0 +1,37 @@
+.loop { position: relative; display: grid; gap: 18px; padding: 8px 0; }
+.outline { display: none; }
+.row { display: grid; grid-template-columns: 1fr; gap: 0; }
+.station {
+  position: relative;
+  display: grid; gap: 2px; text-align: start;
+  padding: 16px 20px 16px 20px;
+  padding-inline-start: 36px;
+  background: transparent; border: 0;
+  border-inline-start: 2px solid var(--line-light);
+  transition: border-color .3s;
+}
+.station::before { content: ""; position: absolute; inset-inline-start: -7px; top: 22px; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--mist); transition: background .3s, border-color .3s, transform .4s var(--ease-out); }
+.station :global(.mono) { color: var(--steel); font-size: .6875rem; }
+.station strong { font-size: 1.25rem; font-weight: 600; transition: color .3s; }
+.on::before { background: var(--orange); border-color: var(--orange); transform: scale(1.3); }
+.on strong { color: var(--orange); }
+.on :global(.mono) { color: var(--ink-2); }
+.center { order: 3; padding: 20px; border-radius: var(--radius); background: var(--ink-2); color: #fff; min-height: 128px; }
+.centerEn { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .14em; color: var(--orange); }
+.center p { margin-top: 8px; font-size: 1.0625rem; animation: fade .6s var(--ease-out); }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.closing { margin-top: 40px; font-weight: 600; font-size: var(--fs-h3); max-width: 30ch; }
+
+@media (min-width: 900px) {
+  .loop { padding: 0; gap: 0; }
+  .outline { display: block; position: absolute; inset: 8px 0; border: 1.5px solid var(--mist); border-radius: 999px; pointer-events: none; }
+  .outline::after { content: ""; position: absolute; inset: -1.5px; border-radius: inherit; border: 1.5px solid transparent; border-top-color: var(--orange); opacity: .0; }
+  .row { grid-template-columns: repeat(4, 1fr); padding-inline: 9%; }
+  .station { border: 0; padding: 0 12px; justify-items: center; text-align: center; align-content: start; background: transparent; }
+  .row:last-of-type .station { align-content: end; }
+  .station::before { position: static; order: -1; margin-bottom: 12px; width: 16px; height: 16px; background: var(--paper); }
+  .row:last-of-type .station::before { order: 3; margin: 12px 0 0; }
+  .station:hover strong { color: var(--orange); }
+  .center { order: 0; margin: 40px auto; max-width: 600px; text-align: center; background: transparent; color: var(--ink-2); min-height: 150px; padding: 20px; display: grid; align-content: center; }
+  .center p { font-size: var(--fs-lead); }
+}
