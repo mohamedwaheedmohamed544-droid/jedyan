@@ -1,14 +1,23 @@
 .section { overflow: hidden; }
 .copy { display: grid; gap: 20px; align-content: start; }
 .layers { margin-top: 18px; border-top: 1px solid var(--line-light); }
-.layers li { display: grid; gap: 2px; padding: 18px 0; border-bottom: 1px solid var(--line-light); }
+.layers li { position: relative; display: grid; gap: 2px; padding: 18px 0; padding-inline-start: 72px; border-bottom: 1px solid var(--line-light); transition: background .4s, padding .4s var(--ease-out); cursor: default; }
+.layers li::before { content: ""; position: absolute; inset-block: -1px; inset-inline-start: 0; width: 3px; background: var(--orange); transform: scaleY(0); transition: transform .4s var(--ease-out); }
+.layerOn::before { transform: scaleY(1) !important; }
+.layerOn { background: linear-gradient(to var(--end, right), rgba(255,110,6,.07), transparent 70%); }
+:global([dir="rtl"]) .layers li { --end: left; }
+.layerIcon { position: absolute; inset-inline-start: 10px; top: 50%; width: 52px; height: 52px; translate: 0 -50%; filter: grayscale(.85) opacity(.7); transition: filter .4s, transform .5s var(--ease-out); }
+.layerOn .layerIcon { filter: none; transform: translateY(-3px) scale(1.12); }
+.layerIcon svg, .layerIcon img { width: 100%; height: 100%; overflow: visible; object-fit: contain; }
 .layers :global(.mono) { color: var(--orange); font-size: .6875rem; }
 .layers strong { font-size: 1.125rem; font-weight: 600; }
 .items { color: var(--steel); font-size: .9375rem; }
 
 .diagramWrap { position: relative; display: grid; justify-items: center; gap: 20px; }
 @media (min-width: 960px) { .diagramWrap { position: sticky; top: calc(var(--header-h) + 40px); } }
-.diagram { width: min(100%, 560px); height: auto; overflow: visible; }
+.diagramWrap { perspective: 1000px; --rx: 0deg; --ry: 0deg; }
+.diagram { width: min(100%, 560px); height: auto; overflow: visible; transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .5s var(--ease-out); will-change: transform; }
+.pulse { fill: var(--orange); filter: drop-shadow(0 0 6px rgba(255,110,6,.9)); }
 .orbit { fill: none; stroke: var(--line-light); stroke-width: 1; }
 .orbitFlow { fill: none; stroke: var(--orange); stroke-width: 2; stroke-dasharray: 6 94; stroke-linecap: round; animation: orbit 9s linear infinite; }
 @keyframes orbit { to { stroke-dashoffset: -100; } }
@@ -20,11 +29,19 @@
 .coreT2 { fill: var(--orange); font-size: 8.5px; letter-spacing: .2em; font-family: var(--font-mono); }
 .node { cursor: pointer; outline: none; }
 .node circle { fill: var(--paper); stroke: var(--line-light); stroke-width: 1; transition: fill .4s var(--ease-out), stroke .4s, transform .5s var(--ease-out); }
-.node text { fill: var(--ink-2); font-size: 14px; font-weight: 600; font-family: var(--font-ar); transition: fill .3s; pointer-events: none; }
-:global(html[lang="en"]) .node text { font-family: var(--font-en); font-size: 12.5px; }
-.nodeOn circle, .node:focus-visible circle { fill: var(--orange); stroke: var(--orange); transform: scale(1.08); }
+.node text { fill: var(--ink-2); font-size: 12.5px; font-weight: 600; font-family: var(--font-ar); transition: fill .3s; pointer-events: none; }
+:global(html[lang="en"]) .node text { font-family: var(--font-en); font-size: 11px; }
+.nodeIcon { filter: grayscale(1) opacity(.55); transition: transform .5s var(--ease-out), filter .4s; transform-box: fill-box; transform-origin: 50% 80%; }
+.nodeIcon svg { overflow: visible; }
+.node:not(.nodeOn):hover .nodeIcon { transform: translateY(-3px) scale(1.08); filter: grayscale(.4) opacity(.85); }
+.nodeOn circle, .node:focus-visible circle { fill: var(--ink-2); stroke: var(--orange); stroke-width: 2; transform: scale(1.1); }
+.nodeOn .nodeIcon, .node:focus-visible .nodeIcon { transform: translateY(-4px) scale(1.12); filter: drop-shadow(0 6px 10px rgba(255,110,6,.45)); }
 .nodeOn text, .node:focus-visible text { fill: #fff; }
-.note { text-align: center; max-width: 380px; min-height: 76px; }
+.noteIcon { width: 84px; height: 84px; margin: 0 auto 4px; animation: pop .6s var(--ease-out) both; }
+.noteIcon svg, .noteIcon img { width: 100%; height: 100%; overflow: visible; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(255,110,6,.25)); animation: bob 4.5s ease-in-out .6s infinite; }
+@keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.8) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.note { text-align: center; max-width: 380px; min-height: 170px; }
 .note :global(.mono) { color: var(--orange); }
 .note p { margin-top: 4px; font-size: 1.0625rem; }
-@media (prefers-reduced-motion: reduce) { .orbitFlow { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .orbitFlow, .noteIcon, .noteIcon svg, .noteIcon img { animation: none; } .diagram { transform: none; } .pulse { display: none; } }

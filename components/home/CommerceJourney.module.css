@@ -7,6 +7,11 @@
 
 .stage { display: grid; gap: 20px; align-items: center; }
 @media (min-width: 900px) { .stage { grid-template-columns: 1.1fr 1fr; gap: 64px; } }
+.icon3d { width: clamp(84px, 14vh, 140px); aspect-ratio: 1; margin-bottom: 4px; animation: pop .7s var(--ease-out) both; }
+.icon3d svg, .icon3d img { width: 100%; height: 100%; overflow: visible; object-fit: contain; filter: drop-shadow(0 10px 22px rgba(255,110,6,.28)); animation: bob 4.5s ease-in-out .7s infinite; }
+@keyframes pop { from { opacity: 0; transform: translateY(18px) scale(.8) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes bob { 50% { transform: translateY(-6px); } }
+@media (prefers-reduced-motion: reduce) { .icon3d, .icon3d svg, .icon3d img { animation: none; } }
 .count { color: var(--orange); }
 .stageName { font-size: clamp(2.4rem, 1.4rem + 5vw, 6rem); font-weight: 700; line-height: 1.1; margin-top: 6px; animation: rise .7s var(--ease-out); }
 .stageNote { margin-top: 12px; font-size: var(--fs-lead); color: rgba(255,255,255,.78); max-width: 42ch; animation: rise .8s var(--ease-out) .05s both; }

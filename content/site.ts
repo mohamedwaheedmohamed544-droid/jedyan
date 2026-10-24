@@ -50,7 +50,7 @@ export const messages = {
 };
 
 /* ---------- Section 01: Operating layer ---------- */
-export const operatingElements: { key: string; label: T; en: string; note: T }[] = [
+export const operatingElements: { key: string; icon?: string; image?: string; label: T; en: string; note: T }[] = [
   { key: "inventory", label: { ar: "المخزون", en: "Inventory" }, en: "INVENTORY", note: { ar: "استلام، فحص، تصنيف، تخزين، جرد وضبط.", en: "Receive, inspect, classify, store, count, adjust." } },
   { key: "order", label: { ar: "الطلب", en: "Order" }, en: "ORDER", note: { ar: "استقبال الطلب من القناة وإطلاقه للتنفيذ.", en: "Capture the order from its channel and release it." } },
   { key: "fulfillment", label: { ar: "التنفيذ", en: "Fulfillment" }, en: "FULFILLMENT", note: { ar: "انتقاء، تعبئة وتغليف، وتجهيز للشحن.", en: "Pick, pack and prepare for dispatch." } },
@@ -59,7 +59,7 @@ export const operatingElements: { key: string; label: T; en: string; note: T }[]
   { key: "data", label: { ar: "البيانات", en: "Data" }, en: "DATA", note: { ar: "حالة الطلب، حالة المخزون، الاستثناءات، تقارير الأداء.", en: "Order status, stock status, exceptions, performance." } },
 ];
 
-export const operatingLayers: { en: string; label: T; items: T }[] = [
+export const operatingLayers: { en: string; icon?: string; image?: string; label: T; items: T }[] = [
   { en: "INVENTORY LAYER", label: { ar: "طبقة المخزون", en: "Inventory layer" }, items: { ar: "استلام · فحص · تصنيف · تخزين · جرد · ضبط المخزون", en: "Receive · Inspect · Classify · Store · Count · Adjust" } },
   { en: "ORDER LAYER", label: { ar: "طبقة الطلب", en: "Order layer" }, items: { ar: "استقبال الطلب · انتقاء · تعبئة وتغليف · تجهيز للشحن", en: "Order intake · Pick · Pack · Ready to ship" } },
   { en: "MOVEMENT LAYER", label: { ar: "طبقة الحركة", en: "Movement layer" }, items: { ar: "اختيار الناقل · إرسال · تتبّع · تسليم · معالجة المرتجعات", en: "Carrier selection · Dispatch · Track · Deliver · Returns" } },
@@ -67,7 +67,7 @@ export const operatingLayers: { en: string; label: T; items: T }[] = [
 ];
 
 /* ---------- Section 02: Commerce operations cycle ---------- */
-export const cycle: { en: string; label: T; note: T }[] = [
+export const cycle: { en: string; icon?: string; image?: string; label: T; note: T }[] = [
   { en: "DEMAND", label: { ar: "طلب السوق", en: "Demand" }, note: { ar: "المبيعات تأتي من المتاجر والتطبيقات والمنصات والفروع — والتشغيل يجب أن يكون جاهزًا لها جميعًا.", en: "Sales arrive from stores, apps, marketplaces and branches — operations must be ready for all of them." } },
   { en: "INVENTORY", label: { ar: "المخزون", en: "Inventory" }, note: { ar: "مخزون واحد متزامن عبر القنوات، يبدأ دقيقًا من لحظة الاستلام.", en: "One synchronised stock across channels, accurate from the moment of receipt." } },
   { en: "ORDER", label: { ar: "الطلب", en: "Order" }, note: { ar: "كل طلب يدخل دورة تشغيل واحدة لها حالة معروفة في كل لحظة.", en: "Every order enters one operating cycle with a known status at every moment." } },
@@ -79,7 +79,7 @@ export const cycle: { en: string; label: T; note: T }[] = [
 ];
 
 /* ---------- Commerce operations journey (9 stages) ---------- */
-export const journey: { en: string; label: T; status: T; note: T; data: T[] }[] = [
+export const journey: { en: string; icon?: string; image?: string; label: T; status: T; note: T; data: T[] }[] = [
   { en: "INBOUND", label: { ar: "استلام", en: "Inbound" }, status: { ar: "وصلت الشحنة الواردة", en: "Inbound shipment arrived" }, note: { ar: "دقة الاستلام هي أساس دقة المخزون وكفاءة كل ما يليها.", en: "Receiving accuracy is the foundation of stock accuracy and everything after it." }, data: [{ ar: "مطابقة الكميات", en: "Quantity match" }, { ar: "فحص الحالة", en: "Condition check" }, { ar: "توثيق الوارد", en: "Inbound record" }] },
   { en: "STORAGE", label: { ar: "تخزين", en: "Storage" }, status: { ar: "مُخزّن في موقع محدد", en: "Stored at a defined location" }, note: { ar: "لكل صنف موقع، ولكل حركة أثر.", en: "Every item has a location; every movement leaves a trace." }, data: [{ ar: "ترميز الأصناف", en: "SKU labelling" }, { ar: "موقع التخزين", en: "Bin location" }, { ar: "رصيد متاح", en: "Available balance" }] },
   { en: "ORDER", label: { ar: "طلب", en: "Order" }, status: { ar: "طلب جديد مُستلم", en: "New order received" }, note: { ar: "يبدأ التشغيل من حدث الطلب، لا من باب المستودع.", en: "Operations start at the order event, not at the warehouse door." }, data: [{ ar: "القناة", en: "Channel" }, { ar: "الأصناف المحجوزة", en: "Reserved items" }, { ar: "إطلاق للتنفيذ", en: "Released" }] },

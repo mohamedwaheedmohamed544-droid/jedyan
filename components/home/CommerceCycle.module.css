@@ -10,13 +10,24 @@
   border-inline-start: 2px solid var(--line-light);
   transition: border-color .3s;
 }
-.station::before { content: ""; position: absolute; inset-inline-start: -7px; top: 22px; width: 12px; height: 12px; border-radius: 50%; background: var(--paper); border: 2px solid var(--mist); transition: background .3s, border-color .3s, transform .4s var(--ease-out); }
+.station::before { display: none; }
+.badge { position: absolute; inset-inline-start: -23px; top: 10px; width: 44px; height: 44px; padding: 7px; border-radius: 50%; background: var(--paper); border: 2px solid var(--mist); transition: border-color .3s, transform .5s var(--ease-out), box-shadow .4s; }
+.badge svg, .badge img { width: 100%; height: 100%; overflow: visible; object-fit: contain; filter: grayscale(1) opacity(.55); transition: filter .4s; }
+.station:hover .badge svg, .station:hover .badge img { filter: grayscale(.4) opacity(.85); }
+.station { padding-inline-start: 44px; }
 .station :global(.mono) { color: var(--steel); font-size: .6875rem; }
 .station strong { font-size: 1.25rem; font-weight: 600; transition: color .3s; }
-.on::before { background: var(--orange); border-color: var(--orange); transform: scale(1.3); }
+.on .badge { border-color: var(--orange); transform: translateY(-3px) scale(1.15); box-shadow: 0 10px 22px rgba(255,110,6,.28); }
+.on .badge svg, .on .badge img, .station.on:hover .badge svg { filter: none; }
 .on strong { color: var(--orange); }
 .on :global(.mono) { color: var(--ink-2); }
 .center { order: 3; padding: 20px; border-radius: var(--radius); background: var(--ink-2); color: #fff; min-height: 128px; }
+.centerIcon { display: block; width: 72px; height: 72px; margin-bottom: 6px; animation: pop .6s var(--ease-out) both; }
+.centerIcon svg, .centerIcon img { width: 100%; height: 100%; overflow: visible; object-fit: contain; filter: drop-shadow(0 8px 14px rgba(255,110,6,.25)); animation: bob 4.5s ease-in-out .6s infinite; }
+@keyframes pop { from { opacity: 0; transform: translateY(12px) scale(.8) rotate(-6deg); } to { opacity: 1; transform: none; } }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.loop { perspective: 1100px; --rx: 0deg; --ry: 0deg; }
+.center { transform-style: preserve-3d; }
 .centerEn { font-family: var(--font-mono); font-size: .75rem; letter-spacing: .14em; color: var(--orange); }
 .center p { margin-top: 8px; font-size: 1.0625rem; animation: fade .6s var(--ease-out); }
 @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -24,14 +35,18 @@
 
 @media (min-width: 900px) {
   .loop { padding: 0; gap: 0; }
-  .outline { display: block; position: absolute; inset: 8px 0; border: 1.5px solid var(--mist); border-radius: 999px; pointer-events: none; }
+  .outline { display: block; position: absolute; inset: 30px 0; border: 1.5px solid var(--mist); border-radius: 999px; pointer-events: none; }
   .outline::after { content: ""; position: absolute; inset: -1.5px; border-radius: inherit; border: 1.5px solid transparent; border-top-color: var(--orange); opacity: .0; }
   .row { grid-template-columns: repeat(4, 1fr); padding-inline: 9%; }
   .station { border: 0; padding: 0 12px; justify-items: center; text-align: center; align-content: start; background: transparent; }
   .row:last-of-type .station { align-content: end; }
-  .station::before { position: static; order: -1; margin-bottom: 12px; width: 16px; height: 16px; background: var(--paper); }
-  .row:last-of-type .station::before { order: 3; margin: 12px 0 0; }
+  .station { padding-inline-start: 12px; }
+  .badge { position: relative; inset: auto; order: -1; margin-bottom: 10px; width: 60px; height: 60px; padding: 9px; }
+  .row:last-of-type .badge { order: 3; margin: 10px 0 0; }
+  .row { transform: rotateX(var(--rx)) rotateY(var(--ry)); transition: transform .5s var(--ease-out); }
   .station:hover strong { color: var(--orange); }
-  .center { order: 0; margin: 40px auto; max-width: 600px; text-align: center; background: transparent; color: var(--ink-2); min-height: 150px; padding: 20px; display: grid; align-content: center; }
+  .center { order: 0; margin: 40px auto; max-width: 600px; text-align: center; background: transparent; color: var(--ink-2); min-height: 210px; padding: 20px; display: grid; justify-items: center; align-content: center; }
   .center p { font-size: var(--fs-lead); }
 }
+
+@media (prefers-reduced-motion: reduce) { .centerIcon, .centerIcon svg, .centerIcon img { animation: none; } .row { transform: none !important; } }

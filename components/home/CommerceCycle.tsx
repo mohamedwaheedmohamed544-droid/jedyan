@@ -1,8 +1,10 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 import { useEffect, useState, type CSSProperties } from "react";
 import type { Locale } from "@/content/types";
 import { useSite, px } from "@/components/SiteContext";
 import { useInView } from "@/lib/hooks";
+import JourneyIcon3D from "./JourneyIcon3D";
 import s from "./CommerceCycle.module.css";
 
 /* stations laid out as a loop: top row runs forward, bottom row returns */
@@ -22,17 +24,38 @@ export default function CommerceCycle({ locale, b }: { locale: Locale; b?: Recor
     return () => window.clearInterval(id);
   }, [inView, hold]);
 
+  const pick = (i: number) => { setHold(true); setActive(i); };
+  const tilt = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "mouse") return;
+    const r = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty("--ry", `${(((e.clientX - r.left) / r.width - 0.5) * 5).toFixed(2)}deg`);
+    e.currentTarget.style.setProperty("--rx", `${(-((e.clientY - r.top) / r.height - 0.5) * 5).toFixed(2)}deg`);
+  };
+  const untilt = (e: React.PointerEvent<HTMLDivElement>) => { setHold(false); e.currentTarget.style.setProperty("--ry", "0deg"); e.currentTarget.style.setProperty("--rx", "0deg"); };
+  const onKey = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
+    const step = e.key === "ArrowRight" || e.key === "ArrowDown" ? 1 : e.key === "ArrowLeft" || e.key === "ArrowUp" ? -1 : 0;
+    if (!step) return;
+    e.preventDefault();
+    const next = (i + step + cycle.length) % cycle.length;
+    pick(next);
+    e.currentTarget.closest(`.${s.loop}`)?.querySelectorAll<HTMLButtonElement>(`.${s.station}`)[[...ORDER_TOP, ...ORDER_BOTTOM].indexOf(next)]?.focus();
+  };
+
   const station = (i: number) => (
     <button
       key={cycle[i].en}
       type="button"
       className={`${s.station} ${i === active ? s.on : ""}`}
       style={{ "--k": i } as CSSProperties}
-      onMouseEnter={() => { setHold(true); setActive(i); }}
-      onFocus={() => { setHold(true); setActive(i); }}
-      onClick={() => { setHold(true); setActive(i); }}
+      onMouseEnter={() => pick(i)}
+      onFocus={() => pick(i)}
+      onClick={() => pick(i)}
+      onKeyDown={(e) => onKey(e, i)}
       aria-pressed={i === active}
     >
+      <span className={s.badge} aria-hidden="true">
+        {cycle[i].image ? <img src={cycle[i].image} alt="" /> : <JourneyIcon3D stage={cycle[i].en} icon={cycle[i].icon} />}
+      </span>
       <span className="mono">{String(i + 1).padStart(2, "0")} · {cycle[i].en}</span>
       <strong>{cycle[i].label[L]}</strong>
     </button>
@@ -51,11 +74,14 @@ export default function CommerceCycle({ locale, b }: { locale: Locale; b?: Recor
           </p>
         </div>
 
-        <div ref={ref} className={s.loop} data-reveal onMouseLeave={() => setHold(false)} style={{ "--a": active } as CSSProperties}>
+        <div ref={ref} className={s.loop} data-reveal onPointerMove={tilt} onPointerLeave={untilt} style={{ "--a": active } as CSSProperties}>
           <span className={s.outline} aria-hidden="true" />
           <div className={s.row}>{ORDER_TOP.map(station)}</div>
           <div className={s.center} aria-live="polite">
-            <span className={s.centerEn}>{cycle[active].en}</span>
+            <span className={s.centerIcon} key={`ci${active}`}>
+              {cycle[active].image ? <img src={cycle[active].image} alt="" /> : <JourneyIcon3D stage={cycle[active].en} icon={cycle[active].icon} />}
+            </span>
+            <span className={s.centerEn} dir="ltr">{String(active + 1).padStart(2, "0")} / {String(cycle.length).padStart(2, "0")} · {cycle[active].en}</span>
             <p key={active}>{cycle[active].note[L]}</p>
           </div>
           <div className={s.row}>{ORDER_BOTTOM.map(station)}</div>

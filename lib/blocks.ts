@@ -19,7 +19,15 @@ export type BlockDef = {
   fields: Field[];
   /** blocks that read a shared collection — the dashboard links to the right editor */
   collection?: string;
+  /** further shared lists the block reads — each gets its own edit link */
+  moreCollections?: string[];
 };
+
+/** Preset 3D icons for the journey and operating-layer sections — keys match components/home/JourneyIcon3D. */
+export const ICON_PRESETS: [string, string, string][] = [
+  ["inbound", "استلام", "Inbound"], ["storage", "مستودع", "Warehouse"], ["order", "طلب", "Order"], ["pick", "انتقاء", "Pick"], ["pack", "تغليف", "Pack"],
+  ["dispatch", "شاحنة", "Truck"], ["delivery", "موقع التسليم", "Delivery pin"], ["returns", "مرتجع", "Returns"], ["reporting", "تقارير", "Reporting"], ["inventory", "مخزون (رفوف)", "Inventory racks"], ["data", "بيانات (خوادم)", "Data"], ["demand", "طلب السوق (عربة)", "Demand cart"], ["customer", "العميل (منزل)", "Customer home"],
+];
 
 const L = (ar: string, en: string): T => ({ ar, en });
 const text = (key: string, ar: string, en: string, kind: "text" | "textarea" = "text"): Field => ({ key, kind, label: L(ar, en), localized: true });
@@ -68,7 +76,7 @@ export const BLOCKS: BlockDef[] = [
       { key: "showBlades", kind: "bool", label: L("إظهار الشفرات البرتقالية", "Show brand blades") },
     ],
   },
-  { type: "operating-layer", label: L("طبقة التشغيل (الرسم الدائري)", "Operating layer diagram"), group: "story", collection: "operatingElements", fields: head() },
+  { type: "operating-layer", label: L("طبقة التشغيل (الرسم الدائري)", "Operating layer diagram"), group: "story", collection: "operatingElements", moreCollections: ["operatingLayers"], fields: head() },
   { type: "commerce-journey", label: L("رحلة تشغيل الطلب (تفاعلية)", "Commerce operations journey"), group: "story", collection: "journey", fields: [plain("eyebrow", "العنوان العلوي", "Eyebrow"), text("title", "العنوان", "Heading")] },
   { type: "commerce-cycle", label: L("دورة تشغيل التجارة", "Commerce cycle"), group: "story", collection: "cycle", fields: [...head(), text("closing", "الجملة الختامية", "Closing line")] },
   { type: "why-exists", label: L("لماذا وُجدت جديان", "Why Jedyan exists"), group: "story", fields: [plain("eyebrow", "العنوان العلوي", "Eyebrow"), text("title", "العنوان", "Heading")] },
@@ -180,10 +188,10 @@ export const COLLECTIONS: CollectionDef[] = [
   },
   { key: "sectors", label: L("القطاعات", "Sectors"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("profile", "سمات التشغيل (افصل بـ ·)", "Operating profile (separate with ·)")] },
   { key: "segments", label: L("شرائح العملاء", "Client segments"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("need", "ما يحتاجونه", "What they need", "textarea")] },
-  { key: "journey", label: L("مراحل رحلة الطلب", "Order journey stages"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("status", "حالة الطلب", "Order status"), text("note", "الشرح", "Note", "textarea"), { key: "data", kind: "items", label: L("بيانات المرحلة", "Stage data"), itemFields: [text("value", "البند", "Item")] }] },
-  { key: "cycle", label: L("دورة تشغيل التجارة", "Commerce cycle"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("note", "الشرح", "Note", "textarea")] },
-  { key: "operatingElements", label: L("عناصر طبقة التشغيل", "Operating layer elements"), itemLabelKey: "label", kind: "list", fields: [plain("key", "المعرّف", "Key"), plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("note", "الشرح", "Note", "textarea")] },
-  { key: "operatingLayers", label: L("الطبقات الأربع", "The four layers"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("items", "المكوّنات", "Items")] },
+  { key: "journey", label: L("مراحل رحلة الطلب", "Order journey stages"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), { key: "icon", kind: "select", label: L("الأيقونة ثلاثية الأبعاد", "3D icon"), options: [{ value: "", label: L("تلقائي (حسب المرحلة)", "Auto (by stage)") }, ...ICON_PRESETS.map(([value, ar, en]) => ({ value, label: L(ar, en) })), { value: "none", label: L("بدون أيقونة", "No icon") }] }, { key: "image", kind: "image", label: L("صورة مخصصة بدل الأيقونة (اختياري)", "Custom image instead of icon (optional)") }, text("label", "الاسم", "Name"), text("status", "حالة الطلب", "Order status"), text("note", "الشرح", "Note", "textarea"), { key: "data", kind: "items", label: L("بيانات المرحلة", "Stage data"), itemFields: [text("value", "البند", "Item")] }] },
+  { key: "cycle", label: L("دورة تشغيل التجارة", "Commerce cycle"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), { key: "icon", kind: "select", label: L("الأيقونة ثلاثية الأبعاد", "3D icon"), options: [{ value: "", label: L("تلقائي (حسب المرحلة)", "Auto (by stage)") }, ...ICON_PRESETS.map(([value, ar, en]) => ({ value, label: L(ar, en) })), { value: "none", label: L("بدون أيقونة", "No icon") }] }, { key: "image", kind: "image", label: L("صورة مخصصة بدل الأيقونة (اختياري)", "Custom image instead of icon (optional)") }, text("label", "الاسم", "Name"), text("note", "الشرح", "Note", "textarea")] },
+  { key: "operatingElements", label: L("عناصر طبقة التشغيل", "Operating layer elements"), itemLabelKey: "label", kind: "list", fields: [plain("key", "المعرّف", "Key"), plain("en", "الاسم الإنجليزي", "English name"), { key: "icon", kind: "select", label: L("الأيقونة ثلاثية الأبعاد", "3D icon"), options: [{ value: "", label: L("تلقائي", "Auto") }, ...ICON_PRESETS.map(([value, ar, en]) => ({ value, label: L(ar, en) })), { value: "none", label: L("بدون أيقونة", "No icon") }] }, { key: "image", kind: "image", label: L("صورة مخصصة بدل الأيقونة (اختياري)", "Custom image instead of icon (optional)") }, text("label", "الاسم", "Name"), text("note", "الشرح", "Note", "textarea")] },
+  { key: "operatingLayers", label: L("الطبقات الأربع", "The four layers"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), { key: "icon", kind: "select", label: L("الأيقونة ثلاثية الأبعاد", "3D icon"), options: [{ value: "", label: L("تلقائي", "Auto") }, ...ICON_PRESETS.map(([value, ar, en]) => ({ value, label: L(ar, en) })), { value: "none", label: L("بدون أيقونة", "No icon") }] }, { key: "image", kind: "image", label: L("صورة مخصصة بدل الأيقونة (اختياري)", "Custom image instead of icon (optional)") }, text("label", "الاسم", "Name"), text("items", "المكوّنات", "Items")] },
   { key: "clientJourney", label: L("رحلة العميل", "Client journey"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("does", "ما نقوم به", "What we do", "textarea"), text("question", "سؤال العميل", "Client question"), plain("proof", "الدليل", "Evidence")] },
   { key: "rhythm", label: L("إيقاع التشغيل", "Operating rhythm"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("text", "الوصف", "Text", "textarea")] },
   { key: "scaleModes", label: L("أنماط التوسّع", "Scalability modes"), itemLabelKey: "label", kind: "list", fields: [plain("en", "الاسم الإنجليزي", "English name"), text("label", "الاسم", "Name"), text("text", "الوصف", "Text", "textarea")] },

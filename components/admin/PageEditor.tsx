@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { PageDoc, Section } from "@/lib/content";
-import { BLOCKS, GROUP_LABEL, blockDef, type BlockDef } from "@/lib/blocks";
+import { BLOCKS, GROUP_LABEL, blockDef, collectionDef, type BlockDef } from "@/lib/blocks";
 import { FieldInput, LocalizedInput, SaveBar } from "./Fields";
 import { savePageAction, deletePageAction } from "@/app/(admin)/admin/actions";
 
@@ -135,7 +135,16 @@ export default function PageEditor({ page: initial }: { page: PageDoc }) {
                     {def?.collection && (
                       <p className="a-hint" style={{ marginBottom: 10 }}>
                         محتوى هذا القسم يأتي من قائمة مشتركة —{" "}
-                        <Link href={`/admin/content/${def.collection}`} style={{ color: "var(--a-orange)", fontWeight: 600 }}>تحرير القائمة</Link>
+                        {def.moreCollections?.length ? (
+                          [def.collection, ...def.moreCollections].map((k, n) => (
+                            <span key={k}>
+                              {n > 0 && " · "}
+                              <Link href={`/admin/content/${k}`} style={{ color: "var(--a-orange)", fontWeight: 600 }}>{collectionDef(k)?.label.ar ?? "تحرير القائمة"}</Link>
+                            </span>
+                          ))
+                        ) : (
+                          <Link href={`/admin/content/${def.collection}`} style={{ color: "var(--a-orange)", fontWeight: 600 }}>تحرير القائمة</Link>
+                        )}
                       </p>
                     )}
                     {def?.fields.map((f) => (

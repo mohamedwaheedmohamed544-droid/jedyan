@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import type { CSSProperties } from "react";
 import type { Locale } from "@/content/types";
 import { useSite, px } from "@/components/SiteContext";
 import { useStickyProgress } from "@/lib/hooks";
 import { ui } from "@/lib/ui";
+import JourneyIcon3D from "./JourneyIcon3D";
 import s from "./CommerceJourney.module.css";
 
 /**
@@ -41,6 +43,11 @@ export default function CommerceJourney({ locale, compactHead = false, b }: { lo
 
             <div className={s.stage} aria-live="polite">
               <div className={s.stageMain}>
+                {(st.image || st.icon !== "none") && (
+                  <div className={s.icon3d} key={`i${idx}`}>
+                    {st.image ? <img src={st.image} alt="" /> : <JourneyIcon3D stage={st.en} icon={st.icon} />}
+                  </div>
+                )}
                 <span className={`mono ${s.count}`}>{String(idx + 1).padStart(2, "0")} / {String(n).padStart(2, "0")} · {st.en}</span>
                 <p className={s.stageName} key={`n${idx}`}>{st.label[L]}</p>
                 <p className={s.stageNote} key={`t${idx}`}>{st.note[L]}</p>
