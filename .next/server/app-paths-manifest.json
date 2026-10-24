@@ -1,0 +1,4 @@
+{
+  "/icon.svg/route": "app/icon.svg/route.js",
+  "/(ar)/[[...slug]]/page": "app/(ar)/[[...slug]]/page.js"
+}
